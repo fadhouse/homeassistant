@@ -23,7 +23,7 @@ blueprint:
       description: Service to be performed for prolonged pressure.
       selector:
         action: {}
-  source_url: https://github.com/fadhouse/homeassistant/blueprints/mini_switch_aqara.yaml
+  source_url: https://github.com/fadhouse/homeassistant/blob/main/aqara_mini_switch.yaml
 trigger:
   - platform: mqtt
     topic: !input mqtt_topic
