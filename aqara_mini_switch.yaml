@@ -1,0 +1,46 @@
+blueprint:
+  name: Mini Switch Aqara (WXKG11LM) - Customizable Actions
+  description: Control customizable actions with the Aqara Mini Switch (WXKG11LM) via Zigbee2MQTT.
+  domain: automation
+  input:
+    mqtt_topic:
+      name: MQTT Topic
+      description: The MQTT topic of the device (es. zigbee2mqtt/AqaraSwitchXYZ/action).
+      selector:
+        text:
+    single_action:
+      name: Single-click action
+      description: Service to be performed for a single click.
+      selector:
+        action: {}
+    double_action:
+      name: Action by double-click
+      description: Service to be performed for double-click.
+      selector:
+        action: {}
+    hold_action:
+      name: Action for prolonged pressure
+      description: Service to be performed for prolonged pressure.
+      selector:
+        action: {}
+  source_url: https://github.com/fadhouse/homeassistant/blueprints/mini_switch_aqara.yaml
+trigger:
+  - platform: mqtt
+    topic: !input mqtt_topic
+condition: []
+action:
+  - choose:
+      - conditions:
+          - condition: template
+            value_template: "{{ trigger.payload == 'single' }}"
+        sequence: !input single_action
+      - conditions:
+          - condition: template
+            value_template: "{{ trigger.payload == 'double' }}"
+        sequence: !input double_action
+      - conditions:
+          - condition: template
+            value_template: "{{ trigger.payload == 'hold' }}"
+        sequence: !input hold_action
+    default: []
+mode: single
