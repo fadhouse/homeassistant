@@ -11,7 +11,9 @@ blueprint:
       description: Seleziona i sensori (temperatura/umidità ecc.)
       selector:
         entity:
-          domain: sensor
+          domain: 
+            - sensor
+            - binary_sensor          
           multiple: true
 
     dispositivo_notifica:
