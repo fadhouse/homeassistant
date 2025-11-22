@@ -1,5 +1,5 @@
 blueprint:
-  name: Notifica sensori Zigbee senza aggiornamenti
+  name: Notifica sensori senza aggiornamenti
   description: >
     Invia una notifica se uno o più sensori non aggiornano il loro valore
     da più di 6 ore (21600 secondi). Usa last_updated per rilevare batteria scarica
