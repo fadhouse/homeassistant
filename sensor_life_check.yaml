@@ -1,14 +1,14 @@
 blueprint:
   name: Notifica sensori Zigbee senza aggiornamenti
   description: >
-    Invia una notifica se uno o più sensori Zigbee non aggiornano il loro valore
+    Invia una notifica se uno o più sensori non aggiornano il loro valore
     da più di 6 ore (21600 secondi). Usa last_updated per rilevare batteria scarica
     o sensore bloccato.
   domain: automation
   input:
     sensori:
       name: Sensori da monitorare
-      description: Seleziona i sensori Zigbee (temperatura/umidità ecc.)
+      description: Seleziona i sensori (temperatura/umidità ecc.)
       selector:
         entity:
           domain: sensor
