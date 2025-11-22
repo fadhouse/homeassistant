@@ -1,0 +1,74 @@
+blueprint:
+  name: Notifica sensori Zigbee senza aggiornamenti
+  description: >
+    Invia una notifica se uno o più sensori Zigbee non aggiornano il loro valore
+    da più di 6 ore (21600 secondi). Usa last_updated per rilevare batteria scarica
+    o sensore bloccato.
+  domain: automation
+  input:
+    sensori:
+      name: Sensori da monitorare
+      description: Seleziona i sensori Zigbee (temperatura/umidità ecc.)
+      selector:
+        entity:
+          domain: sensor
+          multiple: true
+
+    dispositivo_notifica:
+      name: Dispositivo per la notifica
+      description: Scegli il tuo device mobile
+      selector:
+        device:
+          integration: mobile_app
+
+    ore_inattivita:
+      name: Ore senza aggiornamenti
+      description: Tempo massimo senza aggiornamenti
+      default: 6
+      selector:
+        number:
+          min: 1
+          max: 48
+          unit_of_measurement: "ore"
+          mode: slider
+
+trigger:
+  - platform: time_pattern
+    minutes: "/30"
+
+variables:
+  sensori: !input sensori
+  timeout: "{{ (input.ore_inattivita | float(0)) * 3600 }}"
+
+condition:
+  - condition: template
+    value_template: >
+      {% set inattivi = [] %}
+      {% for s in sensori %}
+        {% set ent = states[s] %}
+        {% if ent is not none and
+              (now() - ent.last_updated).total_seconds() > timeout %}
+          {% set _ = inattivi.append(s) %}
+        {% endif %}
+      {% endfor %}
+      {{ inattivi | length > 0 }}
+
+action:
+  - device_id: !input dispositivo_notifica
+    domain: mobile_app
+    type: notify
+    title: "Sensore Zigbee fermo"
+    message: >
+      I seguenti sensori non aggiornano da più di
+      {{ input.ore_inattivita }} ore:
+      {% set inattivi = [] %}
+      {% for s in sensori %}
+        {% set ent = states[s] %}
+        {% if ent is not none and
+              (now() - ent.last_updated).total_seconds() > timeout %}
+          {% set _ = inattivi.append(s) %}
+        {% endif %}
+      {% endfor %}
+      {{ inattivi | join(', ') }}
+
+mode: single
